@@ -1,7 +1,6 @@
-# Copyright 2012 Google Inc. All Rights Reserved.
-
-
 """A sample app that uses GCS client to operate on bucket and file."""
+
+from google.appengine.api import users
 
 import os
 import cloudstorage as gcs
@@ -19,7 +18,11 @@ BUCKET = '/yey-cloud-storage-trial'
 class MainPage(webapp2.RequestHandler):
 
   def get(self):
-    filename = BUCKET + '/demo-testfile'
+    user = users.get_current_user()
+    if !user:
+      self.redirect(users.create_login_url(self.request.uri))
+
+    filename = BUCKET + '-' + user.user_id() + '/demo-testfile'
 
     self.response.headers['Content-Type'] = 'text/plain'
     self.tmp_filenames_to_clean_up = []
