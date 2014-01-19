@@ -9,7 +9,9 @@ Problem: Hosting static sites on Google infrastructure is surprisingly hard.
  * Easy domain name hookup
  * Built in caching and versioning
 
-## Current Public Google Tools for Static Site Hosting
+## Google Tools for Static Site Hosting
+
+This does not include competitors or internal tools Google developers have access to.
 
  * Google Drive
    - Will serve any folder in drive as a website
