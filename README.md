@@ -28,6 +28,8 @@ This does not include competitors or internal tools Google developers have acces
    - Requires a little bit of knowledge about App Engine's system to actually deploy
    - https://developers.google.com/appengine/docs/python/gettingstartedpython27/staticfiles
    - Has Git Push to Deploy
+   - Some people have built similar things already
+     - http://drydrop.binaryage.com/
 
 ## Proposed Flow
 
