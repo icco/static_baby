@@ -36,7 +36,7 @@ This does not include competitors or internal tools Google developers have acces
  3. After user puts in a domain, app returns settings for user to put in their DNS and a git repo to push to.
  4. User runs `git remote add google git://blahhhhhhh.git` to add Google as a push point for their static site.
  5. User runs `git push google master` to deploy
- 6. User vists <http://www.example.com/> and see's their website up to date with the new push.
+ 6. User vists <http://www.example.com/> and sees their website up to date with the new push.
  7. User recieves an email with suggestions on how to improve their site with page-speed, and the changes the page speed system did automatically.
 
 For returning users repeat steps five through seven.
