@@ -19,7 +19,7 @@ class MainPage(webapp2.RequestHandler):
 
   def get(self):
     user = users.get_current_user()
-    if !user:
+    if not user:
       self.redirect(users.create_login_url(self.request.uri))
 
     filename = BUCKET + '-' + user.user_id() + '/demo-testfile'
