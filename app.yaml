@@ -1,9 +1,12 @@
 application: static-baby
-version: 1
+version: 2
 runtime: python27
 api_version: 1
-threadsafe: true
+threadsafe: yes
 
 handlers:
+- url: /blobstore.*
+  script: blobstore.app
+
 - url: /.*
-  script: helloworld.application
+  script: main.app
