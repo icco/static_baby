@@ -77,7 +77,7 @@ class LoginPage(BasePage):
 
   def get(self):
     user = users.get_current_user()
-    if user
+    if user:
       self.redirect('/')
     else:
       url = users.create_login_url('/')
