@@ -9,6 +9,7 @@ from webapp2_extras import jinja2
 
 from apiclient.discovery import build
 from oauth2client.appengine import OAuth2Decorator
+from google.appengine.api import users
 
 import settings
 
@@ -25,28 +26,68 @@ my_default_retry_params = gcs.RetryParams(
     max_retry_period=15)
 gcs.set_default_retry_params(my_default_retry_params)
 
+class BasePage(webapp2.RequestHandler):
+  """
+  Render a template with local variables defined.
 
-class MainPage(webapp2.RequestHandler):
-
+  Args:
+    template: string. Template name.
+    **context: Keywords to be bound as local variables in the template.
+  """
   def render_response(self, template, **context):
     renderer = jinja2.get_jinja2(app=self.app)
     rendered_value = renderer.render_template(template, **context)
     self.response.write(rendered_value)
 
+
+class MainPage(BasePage):
+
   @decorator.oauth_aware
   def get(self):
-    if decorator.has_credentials():
+    user = users.get_current_user()
+    if user and decorator.has_credentials():
       # TODO: Figure out how to get a project list for a user.
-      result = service.buckets().list().execute(http=decorator.http())
+
+      result = service.buckets().list(project).execute(http=decorator.http())
       buckets = result.get('items', [])
       self.render_response('index.html', buckets=buckets)
     else:
-      url = decorator.authorize_url()
-      self.render_response('index.html', buckets=[], authorize_url=url)
+      if user:
+        self.redirect('/authorize')
+      else:
+        self.redirect('/login')
+
+
+class AuthorizePage(BasePage):
+
+  @decorator.oauth_aware
+  def get(self):
+    user = users.get_current_user()
+    if user and decorator.has_credentials():
+      self.redirect('/')
+    else:
+      if user:
+        url = decorator.authorize_url()
+        self.render_response('authorize.html', authorize_url=url)
+      else:
+        self.redirect('/login')
+
+
+class LoginPage(BasePage):
+
+  def get(self):
+    user = users.get_current_user()
+    if user
+      self.redirect('/')
+    else:
+      url = users.create_login_url('/')
+      self.render_response('login.html', login_url=url)
 
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
+    ('/login', LoginPage),
+    ('/authorize', AuthorizePage),
     (decorator.callback_path, decorator.callback_handler()),
     ], debug=True)
 
