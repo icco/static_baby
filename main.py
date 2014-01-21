@@ -16,7 +16,7 @@ decorator = OAuth2Decorator(
     client_id=settings.CLIENT_ID,
     client_secret=settings.CLIENT_SECRET,
     scope=settings.SCOPE)
-service = build('tasks', 'v1')
+service = build('storage', 'v1beta2')
 
 my_default_retry_params = gcs.RetryParams(
     initial_delay=0.2,
@@ -36,15 +36,12 @@ class MainPage(webapp2.RequestHandler):
   @decorator.oauth_aware
   def get(self):
     if decorator.has_credentials():
-      result = service.tasks().list(tasklist='@default').execute(
-          http=decorator.http())
-      tasks = result.get('items', [])
-      for task in tasks:
-        task['title_short'] = truncate(task['title'], 26)
-      self.render_response('index.html', tasks=tasks)
+      result = service.buckets().list().execute(http=decorator.http())
+      buckets = result.get('items', [])
+      self.render_response('index.html', buckets=buckets)
     else:
       url = decorator.authorize_url()
-      self.render_response('index.html', tasks=[], authorize_url=url)
+      self.render_response('index.html', buckets=[], authorize_url=url)
 
 
 app = webapp2.WSGIApplication([
