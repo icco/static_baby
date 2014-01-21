@@ -5,8 +5,9 @@ api_version: 1
 threadsafe: yes
 
 handlers:
-- url: /blobstore.*
-  script: blobstore.app
-
 - url: /.*
   script: main.app
+
+libraries:
+- name: jinja2
+  version: latest

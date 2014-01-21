@@ -5,10 +5,18 @@ import json
 import os
 import cloudstorage as gcs
 import webapp2
+from webapp2_extras import jinja2
 
-from google.appengine.api import oauth
-from google.appengine.api import app_identity
-from google.appengine.api import urlfetch
+from apiclient.discovery import build
+from oauth2client.appengine import OAuth2Decorator
+
+import settings
+
+decorator = OAuth2Decorator(
+    client_id=settings.CLIENT_ID,
+    client_secret=settings.CLIENT_SECRET,
+    scope=settings.SCOPE)
+service = build('tasks', 'v1')
 
 my_default_retry_params = gcs.RetryParams(
     initial_delay=0.2,
@@ -20,13 +28,29 @@ gcs.set_default_retry_params(my_default_retry_params)
 
 class MainPage(webapp2.RequestHandler):
 
+  def render_response(self, template, **context):
+    renderer = jinja2.get_jinja2(app=self.app)
+    rendered_value = renderer.render_template(template, **context)
+    self.response.write(rendered_value)
+
+  @decorator.oauth_aware
   def get(self):
-    user = oauth.get_current_user()
-    if not user:
-      self.redirect(users.create_login_url(self.request.uri))
+    if decorator.has_credentials():
+      result = service.tasks().list(tasklist='@default').execute(
+          http=decorator.http())
+      tasks = result.get('items', [])
+      for task in tasks:
+        task['title_short'] = truncate(task['title'], 26)
+      self.render_response('index.html', tasks=tasks)
+    else:
+      url = decorator.authorize_url()
+      self.render_response('index.html', tasks=[], authorize_url=url)
 
 
-app = webapp2.WSGIApplication([('/', MainPage)], debug=True)
+app = webapp2.WSGIApplication([
+    ('/', MainPage),
+    (decorator.callback_path, decorator.callback_handler()),
+    ], debug=True)
 
 # Things to look at:
 # https://github.com/GoogleCloudPlatform/storage-appengine-photos-python/blob/master/home.py
