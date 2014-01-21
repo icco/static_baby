@@ -56,3 +56,4 @@ app = webapp2.WSGIApplication([
 # https://github.com/GoogleCloudPlatform/storage-file-transfer-json-python/blob/master/chunked_transfer.py
 # https://github.com/GoogleCloudPlatform/storage-oauth2-tool-python/blob/master/gs-oauth.py
 # https://developers.google.com/appengine/docs/python/appidentity/
+# https://developers.google.com/api-client-library/python/guide/aaa_oauth
