@@ -1,18 +1,14 @@
-<!doctype html>
-<html>
-  <head>
-    <link href="/css/style.css" rel="stylesheet" type="text/css">
-    <link href="http://fonts.googleapis.com/css?family=Coming+Soon:regular" rel="stylesheet" type="text/css">
-  </head>
-  <body>
-    <ul>
-      {% if authorize_url %}
-      <li><a class="title" title="Grant read access to your tasks" href="{{ authorize_url }}">Grant Access</a></li>
-      {% endif %}
-      {% for bucket in buckets %}
-      <li>{{ bucket.name }}</li>
-      {% endfor %}
+{% extends "base.html" %}
+{% block title %} - Home{% endblock %}
+{% block content %}
+<h1>Welcome</h1>
 
-    </ul>
-  </body>
-</html>
+<ul>
+  {% if authorize_url %}
+  <li><a class="title" title="Grant read access to your tasks" href="{{ authorize_url }}">Grant Access</a></li>
+  {% endif %}
+  {% for bucket in buckets %}
+  <li>{{ bucket.name }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}
