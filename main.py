@@ -36,6 +36,7 @@ class MainPage(webapp2.RequestHandler):
   @decorator.oauth_aware
   def get(self):
     if decorator.has_credentials():
+      # TODO: Figure out how to get a project list for a user.
       result = service.buckets().list().execute(http=decorator.http())
       buckets = result.get('items', [])
       self.render_response('index.html', buckets=buckets)
