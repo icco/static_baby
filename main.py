@@ -13,10 +13,13 @@ from google.appengine.api import users
 
 import settings
 
+# Set up a decorator for functions to require oauth
 decorator = OAuth2Decorator(
     client_id=settings.CLIENT_ID,
     client_secret=settings.CLIENT_SECRET,
     scope=settings.SCOPE)
+
+# Set up API calls to Google
 service = build('storage', 'v1beta2')
 
 my_default_retry_params = gcs.RetryParams(
@@ -47,6 +50,7 @@ class MainPage(BasePage):
     user = users.get_current_user()
     if user and decorator.has_credentials():
       # TODO: Figure out how to get a project list for a user.
+      project = 'icco-cloud'
 
       result = service.buckets().list(project).execute(http=decorator.http())
       buckets = result.get('items', [])
